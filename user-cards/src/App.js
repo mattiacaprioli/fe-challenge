@@ -1,12 +1,12 @@
-import React from 'react'
+import React from "react";
+import UserList from "./components/UserList";
 
 function App() {
   return (
-    <div className='text-green-700'>
-      Testing
+    <div className="min-h-screen bg-gray-100 p-5">
+      <UserList />
     </div>
-  )
+  );
 }
 
-export default App
-
+export default App;
