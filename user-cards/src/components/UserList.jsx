@@ -32,8 +32,6 @@ export default function UserList() {
     fetchUsers();
   }, []);
 
-  console.log("favorites", cookies.favorites);
-
   return (
     <div className="text-center">
       <h1 className="text-4xl font-extrabold mb-8 text-white">User Cards</h1>
@@ -74,12 +72,12 @@ export default function UserList() {
 
       <button
         className="mt-8 px-6 py-3 
-      rounded-full font-semibold text-white 
-      bg-gradient-to-r from-pink-600 to-pink-400
-      hover:opacity-80 transition-opacity duration-300
-      disabled:opacity-50 disabled:cursor-not-allowed
-      shadow-[0_0_10px_rgba(236,72,153,0.7)]
-    "
+          rounded-full font-semibold text-white 
+          bg-gradient-to-r from-pink-600 to-pink-400
+          hover:opacity-80 transition-opacity duration-300
+          disabled:opacity-50 disabled:cursor-not-allowed
+          shadow-[0_0_10px_rgba(236,72,153,0.7)]
+        "
         onClick={handleFetchMore}
         disabled={loading}
       >
