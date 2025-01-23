@@ -1,45 +1,52 @@
-import React, { useState } from 'react';
-import useFetchUsers from '../hooks/useFetchUsers';
-import UserCard from './UserCard';
-import { useCookies } from 'react-cookie';
+import React, { useEffect, useState } from "react";
+import useFetchUsers from "../hooks/useFetchUsers";
+import UserCard from "./UserCard";
+import { useCookies } from "react-cookie";
 
 function UserList() {
   const { users, fetchUsers, loading } = useFetchUsers();
-  const [cookies, setCookie] = useCookies(['favorites']);
+  const [cookies, setCookie] = useCookies(["favorites"]);
   const [favorites, setFavorites] = useState(cookies.favorites || []);
 
+  useEffect(() => {
+    setCookie("favorites", JSON.stringify(favorites), { path: "/" });
+  }, [favorites, setCookie]);
+
   const handleFavorite = (user) => {
-    const updatedFavorites = favorites.includes(user.id)
-      ? favorites.filter((id) => id !== user.id)
-      : [...favorites, user.id];
+    const isAlreadyFavorite = favorites.some((fav) => fav.id === user.id);
+    const updatedFavorites = isAlreadyFavorite
+      ? favorites.filter((fav) => fav.id !== user.id)
+      : [...favorites, user];
     setFavorites(updatedFavorites);
-    setCookie('favorites', updatedFavorites, { path: '/' });
   };
 
   const filteredUsers = users.filter(
-    (user) => !favorites.includes(user.id)
+    (user) => !favorites.some((fav) => fav.id === user.id)
   );
 
   const handleFetchMore = () => {
     fetchUsers();
   };
 
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  console.log("favorites", cookies.favorites);
+
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold mb-4">User Cards</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {favorites.map((id) =>
-          users
-            .filter((user) => user.id === id)
-            .map((user) => (
-              <UserCard
-                key={user.id}
-                user={user}
-                isFavorite={favorites.includes(user.id)}
-                onFavorite={() => handleFavorite(user)}
-              />
-            ))
-        )}
+        {/* Mostra i preferiti per primi */}
+        {favorites.map((user) => (
+          <UserCard
+            key={user.id}
+            user={user}
+            isFavorite={true}
+            onFavorite={() => handleFavorite(user)}
+          />
+        ))}
         {filteredUsers.map((user) => (
           <UserCard
             key={user.id}
@@ -54,11 +61,10 @@ function UserList() {
         onClick={handleFetchMore}
         disabled={loading}
       >
-        {loading ? 'Loading...' : `Fetch 10 More Users`}
+        {loading ? "Loading..." : `Fetch 10 More Users`}
       </button>
     </div>
   );
 }
-
 
 export default UserList;
